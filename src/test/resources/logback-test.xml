@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>utf-8</charset>
+            <Pattern>[%p] %c - %m%n</Pattern>
+            <Pattern>%d %-5level [%thread] %logger{0}: %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+ <!--     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+    <maxHistory>90</maxHistory>
+    </rollingPolicy>
+    <encoder>
+    <charset>utf-8</charset>
+    <Pattern>%d %-5level [%thread] %logger{0}: %msg%n</Pattern>
+    </encoder>
+    </appender>  -->
+
+    <logger name="com.dudlo" level="DEBUG"/>
+
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <param name="Target" value="System.out"/>
+    </root>
+</configuration>

@@ -1,0 +1,98 @@
+* {
+/*margin:0;
+	padding:0;
+	border:none;*/
+}
+.pagewrapper {
+	font-family: 'Open Sans', Arial, sans-serif;
+	max-width:800px;
+	margin:20px auto;
+	overflow:hidden;
+}
+#superDiv {
+	width:auto;
+	background:rgba(0, 0, 0, .5);
+	border:none;
+	color:#fff;
+	padding:20px;
+}
+div#current-selection {
+}
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+	font-family: 'Open Sans', Arial, sans-serif;
+}
+#myTable {
+}
+/* full size bgr image https://css-tricks.com/perfect-full-page-background-image/*/
+	 
+	
+	html {
+	background: url("spencers-restaurant-bg-dining-1_54_990x660_201404212140.jpg") no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+#submitdate, #make-reservation, #adMenuButton, #addMenu {
+	display:block;
+	margin:10px 0;
+	border:none;
+	background: #F60;
+	color:#fff;
+	padding:10px;
+	cursor:pointer;
+}
+#myTable {
+	width:100%;
+}
+#myTable .ui-widget-header, #myTable th {
+	background: #333;
+}
+#myTable td, th {
+	border: 1px solid #333;
+}
+div#current-selection {
+	width:auto;
+	background:rgba(0, 0, 0, .5);
+	border:none;
+	color:#fff;
+	padding:20px;
+}
+
+ div#map{
+	 width:auto;
+	background:rgba(0, 0, 0, .5);
+	border:none;
+	color:#fff;
+	padding:20px;
+	 }
+	 
+	  div#map p{
+	 font-weight:bold;
+	 }
+	 
+	  div#map label,
+	  #selectMenu label{
+	  color: #f60;
+	  margin:0 0 5px;
+	 } 
+fieldset {
+	margin:0;
+	padding:0;
+	border:none;
+}
+div#selectMenu{
+	background:rgba(0, 0, 0, .5);
+	border:none;
+	color:#fff;
+	padding:20px;
+	float:left;
+	width:26%;
+}
+#tableDiv{
+	width: 66%;
+	float:right;}
+
+h2{
+	 color: #f60;
+}
