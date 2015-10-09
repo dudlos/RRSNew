@@ -212,7 +212,7 @@ public class ReservationResource {
 			@RequestParam(value = "menuID2", required = false) Long menuID2,
 			@RequestParam(value = "menuID3", required = false) Long menuID3,
 			@RequestParam(value = "menuID4", required = false) Long menuID4,
-			@RequestParam(value = "menuID4", required = false) Long menuID5	) 
+			@RequestParam(value = "menuID5", required = false) Long menuID5	) 
 			{
 			ArrayList<Long> newList = new ArrayList <Long>();
 			if(menuID1 != null){newList.add(menuID1);}; 
@@ -235,7 +235,7 @@ public class ReservationResource {
 	
 	@RequestMapping(value = "/findAllMenusPerReservation", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	
-	public List<Menu> getAllMenus(@RequestParam(value = "reservationID") long reservationID) {
+	public List<Menu> getAllMenusReservation(@RequestParam(value = "reservationID") long reservationID) {
 		List<Menu> allMenu = new ArrayList<Menu>();
 		allMenu  = reservationService.findAllMenusPerReservation(reservationID);
 		return allMenu;

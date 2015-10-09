@@ -11,32 +11,17 @@
 <link rel="stylesheet"
 	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 <meta charset="ISO-8859-1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RRS</title>
 <style type="text/css">
-div#current-selection { position: absolute; /* fixed; */ 
+/* div#current-selection { position: absolute; fixed; 
     left: 525px; top: 325px; width: 35%; height: 50%; z-index: 1; background-color: rgba(255,255,0,0.3); 
-    border-style: outset;}
-//button#make-reservation{position: absolute;top: 50%;}
-#myTable {	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;	width: auto;	border-collapse: collapse}
-#myTable td, th {	font-size: 1em;	border: 1px solid #98bf21;	padding: 3px 7px 2px 7px;}
-#myTable th {	font-size: 1.1em;	text-align: left;	padding-top: 5px;	padding-bottom: 4px;	background-color: #A7C942;	color: #ffffff;}
-#myTable tr.alt td {color: #000000;	background-color: #EAF2D3;}
-#myTable tbody  tr {	cursor: pointer;}
-.ui-dialog .ui-state-error { padding: .3em; }
+    border-style: outset;}*/ 
+#myTable tbody  tr {	cursor: pointer;}   
 
-body {
-	background-color: #e0ffff;
-	background-image: url("${pageContext.request.contextPath}/resources/images/spencers-restaurant-bg-dining-1_54_990x660_201404212140.jpg");
-	background-repeat: repeat-x; background-position: center center;
-	font: helvetica;
-}
-#superDiv {
-    margin: auto;
-    width: 60%;
-    border:3px solid #8AC007;
-    padding: 10px;
-    background-color: #CDB3E4
-}
+.ui-dialog .ui-state-error { padding: .3em; } 
+
+
 </style>
 <script type="text/javascript">
 	//all global variables declaration
@@ -90,7 +75,7 @@ body {
 			if (item.restaurantName == restaurantNamePr) {restaurantIDPr = item.restaurantID}
 			$("#dateDiv").fadeIn("slow");
 			$("#datepicker").val("");
-			$("#myTable").fadeOut();
+			$("#tableDiv").fadeOut();
 			removeRadios();
 			$("#submitDate").fadeOut();
 			$("#current-selection").fadeOut();
@@ -105,7 +90,7 @@ body {
 						$("#datepicker").change(function() {
 						$("#submitDate").fadeIn("slow");
 							removeRadios();
-							$("#myTable").fadeOut("fast");
+							$("#tableDiv").fadeOut("fast");
 							$("#submitDate").prop('disabled', false);
 							$("#current-selection").fadeOut();
 						})
@@ -133,7 +118,7 @@ function resetHomePage()
 {
 			$("#datepicker").val("");
 			$("#dateDiv").fadeOut("slow");
-			$("#myTable").fadeOut();
+			$("#tableDiv").fadeOut();
 			removeRadios();
 			$("#submitDate").fadeOut();
 			$("#current-selection").fadeOut();
@@ -157,7 +142,7 @@ function resetHomePage()
 	$(document).ready(function getRadioAndCapacity() {
 		$("#radioDiv").change(function() {
 			$("#persons").children().remove();
-			$("#myTable").fadeOut("fast");
+			$("#tableDiv").fadeOut("fast");
 			$("#current-selection").fadeOut();
 			$('#myTable tbody > tr').remove();
 			checkedRadio = $('input:radio[name=radio]:checked').val();
@@ -177,7 +162,7 @@ function resetHomePage()
 <script type="text/javascript">
 	$(document)	.ready(	function() {$("#persons").change(
 										function getAllAvailableTables() { numberOfGuests = $("#persons option:selected").val();
-											$("#myTable").fadeOut("fast");
+											$("#tableDiv").fadeOut("fast");
 											$("#current-selection").fadeOut();
 											$('#myTable tbody > tr').remove();
 											listOfTables = null;
@@ -195,7 +180,7 @@ function resetHomePage()
 
 <script type="text/javascript">
 	function populateTablesTree() {
-		$("#myTable").fadeIn("slow");
+		$("#tableDiv").fadeIn();
 		$("#tableDiv").css({ opacity: 0.9})
 		$.each(listOfTables.freeTables, function(idx, elem) {
 			$('table#myTable TBODY').append(
@@ -209,7 +194,7 @@ function resetHomePage()
 	};
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	var img;
 	window.onload = function() {
 		var c = document.getElementById("myCanvas");
@@ -219,15 +204,14 @@ function resetHomePage()
 		ctx.drawImage(img, 10, 10);
 		
 	}
-</script>
+</script> -->
 
 <script type="text/javascript">
 $(document).ready(function selectableRows(){
     $( "#myTable > tbody" ).selectable({
 	     // Don't allow individual table cell selection.
         filter: ":not(td)",
-         // When a row is selected, add the highlight class to the row and
-        // update the total.
+         
         selected: function( e, ui ) {
         resultTableID = null;
         resultTableName  = null;
@@ -277,7 +261,7 @@ $(document).ready(function(){$("#make-reservation")
         $(this).css("background-color", "lightgray");
     }, 
      mouseleave: function(){
-        $(this).css("background-color", "lightblue");
+        $(this).css("background-color", "");
     },   
     click: function(){
         makeReservation();
@@ -295,31 +279,31 @@ $.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost,  func
 .done(function() {
 	alert(reservationID);
     location.href = ("${pageContext.request.contextPath}/api/tableBooking/?reservationID=" + reservationID);
-               
-      }
+                     }
    );
-  
- };
-
+   };
  </script>
-
-
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+<!--xxxx-->
+<link  href= "/resources/css/styles.css"  rel="stylesheet" type="text/css" >
+<!--xxxx-->
 </head>
 
 <body>
+<div class="pagewrapper"> 
+<!--xxxx-->
 <div id = "superDiv" class="ui-widget">
-<div id="mydiv" style="width: 100px height:200px" class="ui-widget">
+<p>Restaurant: 
 		<select id="restaurantList" required="required" autofocus="autofocus"
 			class="ui-widget ui-widget-content">
 			<option value="" id="ddl" style="display: none;" disabled selected>Select
 				Restaurant...</option>
-		</select>
-</div>
+		</select></p>
 
 
-<div id="dateDiv" style="width: 300px height:600px; display: none" class="ui-widget">
+<div id="dateDiv" style="display: none" class="ui-widget">
 		<p>Date: <input type="text" name="date" id="datepicker" onload="" contenteditable="false"></p>
-		<button id="submitDate" type="submit" style="width: 300px height:600px; display: none; background-color: red;">
+		<button id="submitDate" type="submit" style="display: none">
 		Get Available Times</button>
 </div>
 
@@ -329,30 +313,25 @@ $.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost,  func
 </div>
 
 <div id="numberOfPerson" style="display: none;" class="ui-widget">
-		<p>Select Number of Guests </p><select id="persons" required="required"
-				autofocus="autofocus">
+		<p>Select Number of Guests </p><select id="persons" required="required"	>
 				<option value="" id="personOption" style="display: none;" disabled selected>Select Guests...</option>
 			</select>
 </div>
 </div>
-<div id="tableDiv">
-		<table id="myTable" class="ui-widget"
-			style="display: none;">
+<div id="tableDiv" style="display: none">
+		<table id="myTable" >
 			<thead>
-				<tr class="ui-widget-header">
+				<tr >
 					<th>ID</th>
 					<th>Table</th>
 					<th>Capacity</th>
 				</tr>
 			</thead >
-			<tbody class="ui-widget-content ui-state-default">
+			<tbody >
 			</tbody>
 	</table>
 </div>
 
-	<canvas id="myCanvas" width="240" height="297"
-		style="border: 1px solid #d3d3d3; display: none"> Your browser does not support the HTML5 canvas tag.
-	</canvas>
 
 <div id="current-selection" class="ui-widget"  style = "display: none">
 	<h3>Current Selection:</h3>
@@ -371,6 +350,8 @@ $.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost,  func
 <div id="dialogDiv" title="Basic dialog"  style = "display: none">
   	<p>No More Tables available for this time slot try a different time</p>
 </div>
+</div>
+<!--xxxx pagewrapper end-->
 </body>
-</head>
+
 </html>

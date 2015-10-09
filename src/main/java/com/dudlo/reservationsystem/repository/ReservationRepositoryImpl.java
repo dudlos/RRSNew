@@ -236,16 +236,23 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 	@Override
 	public List<Menu> findAllMenusPerReservation(Long reservationID) {
 				  
+		Reservation reservationNew = this.findByID(reservationID);
+		
+		
 		  List<MenuReservationMapping> menuReservations = manager.createQuery(
-					"Select c from MenuReservationMapping c where c.reservationID = :IDparam",
-					MenuReservationMapping.class).setParameter("IDparam", reservationID).getResultList();
+					"Select c from MenuReservationMapping c where c.reservation = :IDparam",
+					MenuReservationMapping.class).setParameter("IDparam", reservationNew).getResultList();
 		  
 		   List<Menu> menus = new ArrayList<Menu>();
-		  for(MenuReservationMapping menuRes: menuReservations)
-		  {
-			  menus.add(menuRes.getMenu());
-		   }
-		  return menus;
-	}
+		   if(menuReservations.isEmpty()){
+			   return menus;}
+		   
+				   else{
+						  for(MenuReservationMapping menuRes: menuReservations)
+						  {
+							  menus.add(menuRes.getMenu());
+						   }
+						  return menus;
+							}
 
-}
+}}

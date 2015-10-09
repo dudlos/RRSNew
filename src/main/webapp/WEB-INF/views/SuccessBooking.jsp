@@ -10,7 +10,10 @@
 	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <link rel="stylesheet"
 	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-	
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+<!--xxxx-->
+<link  href= "/resources/css/styles.css"  rel="stylesheet" type="text/css" >
+<!--xxxx-->	
 	
 <meta charset="ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,19 +22,11 @@
 /* div#map { position: fixed; left: 500px; top: 150px;  width: 25%; height: 50%; z-index: 1; background-color: #e0ffff;; 
     border-style: outset;} */
 div#selectMenu{position: relative; top: 1px;  z-index: 1; width: 25%; }
-/* div#tableDiv{position: fixed; } made the table to addjust to the menuselect accordingly*/
-/*  button#adMenuButton {position: relative; left:125px; top: 95px}   */
-body{ background-color: #f9f9f9; }
+
  
 
  fieldset { border: 0;} select {width: 200px;}.overflow {height: 200px;}  
- #myTable {	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;	width: auto;	border-collapse: collapse;} 
-#myTable td, th {	font-size: 1em;	border: 1px solid #98bf21;	padding: 3px 7px 2px 7px;}
-#myTable th {	font-size: 1.1em;	text-align: left;	padding-top: 5px;	padding-bottom: 4px;	background-color: #A7C942;	color: #ffffff;}
-#myTable tr.alt td {color: #000000;	background-color: #EAF2D3;}
-#myTable tbody  tr {	cursor: pointer;}  
-#myTable {position: relative; /* left:500px;  top: 500px ; width: 500px; } 
- #p1{position: absolute}  
+
  .ui-dialog .ui-state-error { padding: .3em; }
  
 </style>
@@ -46,7 +41,6 @@ var url = decodeURIComponent(window.location.search.substring(1));
 <script type="text/javascript">
 var numberOfGuests;
 var index = 0;
-var reservationID;
 var menus;
 var reservationID = paramJson.reservationID;
 var menuTypes = ["Starter", "Side", "Main", "Dessert", "Salad"];
@@ -67,19 +61,21 @@ var restaurantResultSet;
 						var table = restaurantResultSet.newReservation.table.tableNumber; $("#tables").append($('<label />', {'text' : table}));
 						var restaurant = restaurantResultSet.newReservation.restaurant.restaurantName; $("#restaurants").append($('<label />', {'text' : restaurant }));
 						var time = restaurantResultSet.newReservation.reservationTime; $("#times").append($('<label />', {'text' : time }));
+						getAllMenusReservation();
 											
 							}) })  })
 </script>		
 
 <script type="text/javascript">
-$(document).ready(function ConfirmMenu (){$("#adMenuButton").on({
+$(document).ready(function generateMenuTable (){$("#adMenuButton").on({
     mouseenter: function(){
         $(this).css("background-color", "lightgray");
     }, 
-     mouseleave: function(){
-        $(this).css("background-color", "white");
+       mouseleave: function(){
+        $(this).css('background-color', ""); 
     },   
     click: function(){
+    	alert(index);
     	activateDialog ();
     	if(index <  numberOfGuests){index = index + 1;
     	addSingleMenu();}
@@ -92,7 +88,7 @@ $(document).ready(function ConfirmMenu (){$("#adMenuButton").on({
 <script type="text/javascript">
 function addSingleMenu(){
 	 dialog.dialog("open");
-	$("#adMenuButton").fadeOut();
+	$("#adMenuButton").fadeOut(); 
 	
 	
 }
@@ -108,7 +104,7 @@ function activateDialog (){
 	          Cancel: function(){
 	            dialog.dialog( "close" )}
 	      },
-	      close: function() {$("#adMenuButton").fadeIn();},
+	      close: function() { $("#adMenuButton").fadeIn(); },
 	    });
 	}
 </script>
@@ -124,25 +120,28 @@ function activateDialog (){
 			JsonID = {"restaurantID": restaurantID, "menuType": menu};	 
 			$.getJSON("${pageContext.request.contextPath}/api/getAllMenusForMenuType",JsonID , function(data) 
 				{
-				 i = 0; 
 				 $("#tableDiv").fadeIn();
-				$("#myTable").fadeIn();
-				$("#tableDiv").css({ opacity: 0.9})
-				 if(!($.isEmptyObject(data)))   
+			 	$("#tableDiv").css({ opacity: 0.9})
+				 if((!($.isEmptyObject(data))) && index == 1)   
 				{
 				$.each(data.menus, function(i,value) {
 				var select = $("" + '#'+ menu);
 				var option =  $('<option value="' + "" + '">' + "" +  '</option>');
 				var option = $('<option value="' + value.menuID + '">' + value.dish +  '</option>');
-				submitPar[value.menuType]=value.menuID ;
-				/* for (var i in submitPar)
-					{
-					alert(submitPar[i])}; or alert(Object.keys(obj)[1]); */
 				select.append(option[0]);
 				$('table#myTable TBODY').append(
 						'<tr><td>' + value.menuID + '</td><td>' + value.menuType
 								+ '</td><td>' + value.dish + '</td><td>'  + value.dishDescription + '</td><td>'+ value.price_$ + '</td></tr>'); 				
 									});}
+				 else{
+					 if(!($.isEmptyObject(data)))
+						 {
+						 $.each(data.menus, function(i,value) {
+						 $('table#myTable TBODY').append(
+									'<tr><td>' + value.menuID + '</td><td>' + value.menuType
+											+ '</td><td>' + value.dish + '</td><td>'  + value.dishDescription + '</td><td>'+ value.price_$ + '</td></tr>'); })
+						 }
+				 }
 						 
 					})
 	}
@@ -169,7 +168,7 @@ $( "#Salad" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
 		    }, 
 		     mouseleave: function()
 		     {
-		        $(this).css("background-color", "lightblue");
+		        $(this).css("background-color", "");
 		     },
 		     click:  function addMenu()
 		     {
@@ -183,40 +182,51 @@ $( "#Salad" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
 		     	 
 		    	 $.post("${pageContext.request.contextPath}/api/addMenus", requestData, function(result){menus = result})
 		    	   	 .done(function() {
+		    	   	 $("#myTable  tbody > tr").remove();
 		    		 $("#tableDiv").fadeOut();
 		    		 $("#selectMenu").fadeIn();
-		    		 $("#myTable  tbody > tr").remove();
-		    		  requestData = null; starterID = null;  sideID = null; mainID  = null; dessertID = null; dessertID = null;
-		    		 $( "#Side").prop('selectedIndex',0);
-		    		 $("#mainOption").prop('selectedIndex',0);
-		    		 $("#Dessert").prop('selectedIndex',0);
-		    		 $("#Salad").prop('selectedIndex',0);
+		    		 requestData = null; starterID = null;  sideID = null; mainID  = null; dessertID = null; saladID = null;
+		    		  
+		    	 $( "#Starter").prop('selectedIndex',0).selectmenu( "refresh" );
+		    		 $( "#Side").prop('selectedIndex',0).selectmenu( "refresh" );
+		    		 $("#Main").prop('selectedIndex',0).selectmenu( "refresh" );
+		    		 $("#Dessert").prop('selectedIndex',0).selectmenu( "refresh" );
+		    		 $("#Salad").prop('selectedIndex',0).selectmenu( "refresh" ); 
 		    		 $("#selectMenu").fadeOut();
+		    		 getAllMenusReservation();
 		    		 $("#map").fadeIn();
-		    		 alert("Success:Your Menu has bee adedded to the list");
+		    		
 		    		/*  location.reload(); */
 		    		 
-						    		 /*  $.getJSON("${pageContext.request.contextPath}/api/findAllMenusPerReservation", paramJson, function(menuList)
-												{
-													menus = menuList.dish;
-													menuLabel = "menuLabel";
-													if(menus == null) 
-												{
-													$("#menuu").append($('<label>', { 'text' :"No menu selected yet"}));
-												}
-												else
-													{$("#menuu").append($('<label />', {'text' : menus }))}}) */
-		    	 })
+				 })
 		    	 .fail(function()	{alert("Not able to process your request at the moment please select the menu again");}) 
 		     }
 		     
 	 })})
+
 			
   </script>
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-<!--xxxx-->
-<link  href= "${pageContext.request.contextPath}/resources/css/styles.css"  rel="stylesheet" type="text/css" >
-<!--xxxx-->
+  <script type="text/javascript">
+function getAllMenusReservation(){
+  $.getJSON("${pageContext.request.contextPath}/api/findAllMenusPerReservation", paramJson, function(data)
+			{
+	  			$("#menuu label").remove();
+	  			if($.isEmptyObject(data)) 
+				{
+				$("#menuu").append($('<label>', { 'text' : "No menu selected yet"}));
+				}
+	  			else{
+	  				$.each(data, function(i,value) {
+	  					menus = value.dish;
+	  									{$("#menuu").append($('<label />', {'text' : menus + ", " }))  
+	  									}; 
+	  					})}
+	  			
+	  		
+				
+  })}
+  </script>
+  
   
 </head>
 
@@ -229,24 +239,24 @@ $( "#Salad" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
  
  <fieldset>
     <label for="starters" style = "display: block; margin: 30px 0 0 0;" >Select from Starters</label>
-    <select name="starter" id="Starter"><option value=""  disabled selected>Please Select</option>
+    <select name="starter" id="Starter"><option value=""  >Please Select</option>
      </select>
  
     <label for="sides" style = "display: block; margin: 30px 0 0 0;" >Select a Side Dish</label>
-    <select name="files" id="Side"><option value="" id=""   disabled selected>Please Select</option>
+    <select name="files" id="Side"><option value=""   >Please Select</option>
       <!-- <optgroup label="Scripts"> -->
       </select>
  
     <label for="mains" style = "display: block; margin: 30px 0 0 0;" >Select a Main Course</label>
-    <select name="main" id="Main"><option value="" id="mainOption"   disabled selected>Please Select</option>
+    <select name="main" id="Main"><option value="" >Please Select</option>
     </select>
     
     <label for="desserts" style = "display: block; margin: 30px 0 0 0;" >Select a Dessert</label>
-    <select name="dessert" id="Dessert"><option value="dll" id=""   disabled selected>Please Select</option>
+    <select name="dessert" id="Dessert"><option value="">Please Select</option>
     </select>
      
      <label for="salads" style = "display: block; margin: 30px 0 0 0;" >Select a Salad</label>
-    <select name="salad" id="Salad"><option value="" id="dll"  disabled selected>Please Select</option>
+    <select name="salad" id="Salad"><option value="">Please Select</option>
      </select>
   </fieldset>
  </form>
@@ -259,17 +269,17 @@ $( "#Salad" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
 				<p id = "tables">Table ID: </p>
 				<p id = "restaurants">Restaurant: </p>
 				<p id = "times">Reservation Time: </p>
-				<p id = menuu>Menus: </p>
+				<p id = "menuu">Menus: </p>
 <button id = "adMenuButton" class="ui-widget">Add Menu</button>
 </div>
 <div id="dialogDiv" title="Basic dialog"  style = "display: none">
   	<p>Please Note that you can add only one menu per person at one time</p>
 </div>
 
-<div id="tableDiv" >
-	<table id="myTable" class="ui-widget ui-widget-content" 	style="display: none;">
+<div id="tableDiv" style="display: none">
+	<table id="myTable" >
 			<thead>
-				<tr class="ui-widget-header">
+				<tr >
 					<th>Menu ID</th>
 					<th>Menu Type</th>
 					<th>Dish</th>
@@ -277,7 +287,7 @@ $( "#Salad" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
 					<th>Price_$</th>
 				</tr>
 			</thead >
-			<tbody>
+			<tbody >
 			</tbody>
 	</table>
 </div>

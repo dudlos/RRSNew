@@ -5,7 +5,7 @@
 }
 .pagewrapper {
 	font-family: 'Open Sans', Arial, sans-serif;
-	max-width:800px;
+	max-width:1000px;
 	margin:20px auto;
 	overflow:hidden;
 }
@@ -21,13 +21,12 @@ div#current-selection {
 .ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
 	font-family: 'Open Sans', Arial, sans-serif;
 }
-#myTable {
-}
-/* full size bgr image https://css-tricks.com/perfect-full-page-background-image/*/
+ 
+/*  full size bgr image https://css-tricks.com/perfect-full-page-background-image/ */
 	 
 	
 	html {
-	background: url("spencers-restaurant-bg-dining-1_54_990x660_201404212140.jpg") no-repeat center center fixed;
+	background: url("/resources/images/spencers-restaurant-bg-dining-1_54_990x660_201404212140.jpg"); no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -43,14 +42,16 @@ div#current-selection {
 	cursor:pointer;
 }
 #myTable {
-	width:100%;
+	width:100%;  border-collapse: collapse; 
 }
-#myTable .ui-widget-header, #myTable th {
-	background: #333;
-}
-#myTable td, th {
-	border: 1px solid #333;
-}
+#myTable.ui-widget-header{font-family: 'Open Sans', Arial, sans-serif; background: #333;  color:#ffffff ;} 
+
+#myTable tbody {
+	   border: 1px solid #333;   background: #ffffff; 
+}  
+
+
+
 div#current-selection {
 	width:auto;
 	background:rgba(0, 0, 0, .5);
@@ -88,9 +89,11 @@ div#selectMenu{
 	padding:20px;
 	float:left;
 	width:26%;
+	
 }
 #tableDiv{
 	width: 66%;
+	z-index: 1; 
 	float:right;}
 
 h2{
