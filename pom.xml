@@ -273,7 +273,8 @@
 							<Release-Version>${project.version}</Release-Version>
 							<Build-Date>${maven.build.timestamp}</Build-Date>
 						</manifestEntries>
-					</archive>
+							<manifestFile>src/main/webapp/META-INF/MANIFEST.MF</manifestFile>
+          				</archive>
 				</configuration>
 			</plugin>
 

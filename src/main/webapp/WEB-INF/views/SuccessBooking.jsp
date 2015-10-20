@@ -10,22 +10,17 @@
 	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <link rel="stylesheet"
 	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-<!--xxxx-->
-<link  href= "/resources/css/styles.css"  rel="stylesheet" type="text/css" >
-<!--xxxx-->	
+
 	
 <meta charset="ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style type="text/css">
- p{ color: blue; margin: 10px;} label {color: red } 
-/* div#map { position: fixed; left: 500px; top: 150px;  width: 25%; height: 50%; z-index: 1; background-color: #e0ffff;; 
-    border-style: outset;} */
-div#selectMenu{position: relative; top: 1px;  z-index: 1; width: 25%; }
+
+/* div#selectMenu{position: relative; top: 1px;  z-index: 1; width: 25%; }   */
 
  
 
- fieldset { border: 0;} select {width: 200px;}.overflow {height: 200px;}  
+ fieldset { border: 0;} select {width: 200px;}.overflow {height: 200px;}   
 
  .ui-dialog .ui-state-error { padding: .3em; }
  
@@ -226,17 +221,32 @@ function getAllMenusReservation(){
 				
   })}
   </script>
-  
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> 
+<!--xxxx-->
+<link  href= "/resources/css/styles.css"  rel="stylesheet" type="text/css" >
+<!--xxxx-->	
   
 </head>
 
 <body>
 <div class="pagewrapper"> <!--xxxx-->
-
 <h2>Your Reservation Confirmation</h2>
-<div id = "selectMenu" class = "ui-widget"  style="display: none;">
+<div id = "map"  class='jqm-demos ui-page ui-page-theme-a ui-page-active'  style = "display: none" > 
+				<p id = "reservations">Unique Reservation Number: </p>
+				<p id ="dates">Date: </p>
+				<p id = "guests">Number of Guests: </p>
+				<p id = "tables">Table ID: </p>
+				<p id = "restaurants">Restaurant: </p>
+				<p id = "times">Reservation Time: </p>
+				<p id = "menuu">Menus: </p>
+<button id = "adMenuButton" class="ui-widget">Add Menu</button>
+</div>
+
+<div id="dialogDiv" title="Basic dialog"  style = "display: none">
+  	<p>Please Note that you can add only one menu per person at one time</p>
+</div>
+<div id = "selectMenu" class = "ui-widget"  style="display: none">
 <form action="#">
- 
  <fieldset>
     <label for="starters" style = "display: block; margin: 30px 0 0 0;" >Select from Starters</label>
     <select name="starter" id="Starter"><option value=""  >Please Select</option>
@@ -262,21 +272,9 @@ function getAllMenusReservation(){
  </form>
  <button id = "addMenu" type = "submit">Add To Reservation</button>
 </div>
-<div id = "map"  class='jqm-demos ui-page ui-page-theme-a ui-page-active '  style = "display: none"> <!-- ui-page-footer-fixed  -->
-				<p id = "reservations">Unique Reservation Number: </p>
-				<p id ="dates">Date: </p>
-				<p id = "guests">Number of Guests: </p>
-				<p id = "tables">Table ID: </p>
-				<p id = "restaurants">Restaurant: </p>
-				<p id = "times">Reservation Time: </p>
-				<p id = "menuu">Menus: </p>
-<button id = "adMenuButton" class="ui-widget">Add Menu</button>
-</div>
-<div id="dialogDiv" title="Basic dialog"  style = "display: none">
-  	<p>Please Note that you can add only one menu per person at one time</p>
-</div>
 
-<div id="tableDiv" style="display: none">
+
+<div id="tableDiv"   style="display: none">
 	<table id="myTable" >
 			<thead>
 				<tr >

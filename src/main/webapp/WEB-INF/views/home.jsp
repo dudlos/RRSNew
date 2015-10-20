@@ -14,11 +14,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RRS</title>
 <style type="text/css">
-/* div#current-selection { position: absolute; fixed; 
-    left: 525px; top: 325px; width: 35%; height: 50%; z-index: 1; background-color: rgba(255,255,0,0.3); 
-    border-style: outset;}*/ 
-#myTable tbody  tr {	cursor: pointer;}   
-
+.ui-state-highlight { background: #CCCCCC; border: 1px solid  #fcefa1;}
 .ui-dialog .ui-state-error { padding: .3em; } 
 
 
@@ -194,18 +190,6 @@ function resetHomePage()
 	};
 </script>
 
-<!-- <script type="text/javascript">
-	var img;
-	window.onload = function() {
-		var c = document.getElementById("myCanvas");
-		var ctx = c.getContext("2d");
-		img = new Image();
-		img.src = "${pageContext.request.contextPath}/resources/images/spencers-restaurant-bg-dining-1_54_990x660_201404212140.jpg";
-		ctx.drawImage(img, 10, 10);
-		
-	}
-</script> -->
-
 <script type="text/javascript">
 $(document).ready(function selectableRows(){
     $( "#myTable > tbody" ).selectable({
@@ -215,7 +199,7 @@ $(document).ready(function selectableRows(){
         selected: function( e, ui ) {
         resultTableID = null;
         resultTableName  = null;
-        $( ui.selected ).addClass( "ui-state-highlight" );
+        $(ui.selected).addClass( "ui-state-highlight" );
             resultTableID = $(ui.selected).find("td").eq(0).html();
             resultTableName = $(ui.selected).find("td").eq(1).html();
            	populateSelectionDiv();
@@ -293,12 +277,14 @@ $.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost,  func
 <div class="pagewrapper"> 
 <!--xxxx-->
 <div id = "superDiv" class="ui-widget">
+<div class = "restaurantDiv">
 <p>Restaurant: 
 		<select id="restaurantList" required="required" autofocus="autofocus"
 			class="ui-widget ui-widget-content">
 			<option value="" id="ddl" style="display: none;" disabled selected>Select
 				Restaurant...</option>
 		</select></p>
+</div>
 
 
 <div id="dateDiv" style="display: none" class="ui-widget">
@@ -317,20 +303,20 @@ $.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost,  func
 				<option value="" id="personOption" style="display: none;" disabled selected>Select Guests...</option>
 			</select>
 </div>
-</div>
-<div id="tableDiv" style="display: none">
-		<table id="myTable" >
+<div id="tableDiv"  class="ui-widget" style="display: none">
+		<table id="myTable">
 			<thead>
-				<tr >
+				<tr>
 					<th>ID</th>
 					<th>Table</th>
 					<th>Capacity</th>
 				</tr>
-			</thead >
+			</thead>
 			<tbody >
 			</tbody>
 	</table>
-</div>
+</div></div>
+
 
 
 <div id="current-selection" class="ui-widget"  style = "display: none">
