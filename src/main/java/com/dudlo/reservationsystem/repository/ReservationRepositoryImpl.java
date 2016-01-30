@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 //import javax.persistence.TemporalType;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,7 @@ import com.dudlo.reservationsystem.model.RestTable;
 import com.dudlo.reservationsystem.model.Restaurant;
 import com.dudlo.reservationsystem.model.SlotEnum;
 import com.dudlo.reservationsystem.model.TimeSlot;
+import com.dudlo.reservationsystem.model.User;
 import com.dudlo.reservationsystem.service.MenuReservationMapService;
 
 @Repository
@@ -44,8 +44,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 	@Override
 	public List<Reservation> getAllBookings() {
 
-		return manager.createQuery("from Reservation", Reservation.class)
-				.getResultList();
+		return manager.createQuery("from Reservation", Reservation.class).getResultList();
 	}
 
 	public List<String> checkAvailibilityDate(Date date, Restaurant restaurant) {
@@ -57,45 +56,38 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 	 * @return List of restTables
 	 */
 
-	public List<RestTable> checkAvailibilityTime(Restaurant rest, Date date,
-			String reservationTime, int numberOfPerson) {
+	public List<RestTable> checkAvailibilityTime(Restaurant rest, Date date, String reservationTime, int numberOfPerson) {
 		List<Reservation> resultReservations = new ArrayList<Reservation>();
-		resultReservations = this.getAllReservationsByReservationTime(rest,
-				date, reservationTime);
-		return this
-				.getAvailableTables(resultReservations, rest, numberOfPerson);
+		resultReservations = this.getAllReservationsByReservationTime(rest, date, reservationTime);
+		return this.getAvailableTables(resultReservations, rest, numberOfPerson);
 	}
 
 	@Override
-	public Reservation makeReservation(Date date, int numberOfPerson,
-			Restaurant restaurant,  RestTable table,
-			String reservationTime) {
+	public Reservation makeReservation(Date date, int numberOfPerson, Restaurant restaurant, RestTable table, String reservationTime,
+			User user) {
 
-		Reservation reservation = new Reservation(date, numberOfPerson,
-				restaurant, table, reservationTime);
-		
+		Reservation reservation = new Reservation(date, numberOfPerson, restaurant, table, reservationTime, user);
 		manager.persist(reservation);
 		return reservation;
 	}
 
 	@Override
-	public Reservation addMenus(long reservationID, long menuID)  {
-		Reservation reservation = manager
-				.createQuery(
-						"Select c from Reservation c where c.reservationID = :IDparam",
-						Reservation.class)
+	public Reservation addMenus(long reservationID, long menuID) {
+		Reservation reservation = manager.createQuery("Select c from Reservation c where c.reservationID = :IDparam", Reservation.class)
 				.setParameter("IDparam", reservationID).getSingleResult();
-		
+
 		Menu menu = menuService.getSingleMenu(menuID);
 		MenuReservationMapping menuResMap;
-		menuResMap= menuReservationMapService.createMenuResMap(reservation, menu);//persist new object
+		menuResMap = menuReservationMapService.createMenuResMap(reservation, menu);// persist
+																					// new
+																					// object
 
 		reservation.addMenu(menuResMap);
-		
+
 		manager.merge(this.findByID(reservationID));
-		
+
 		return reservation;
-		
+
 	}
 
 	/*
@@ -108,8 +100,7 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 	public TimeSlot getCorrectTimeSlot(Date date, Restaurant restaurant) {
 
 		String timeSlotPeriod = date.toLocalDate().getDayOfWeek().toString();
-		TimeSlot timeSlot = timeSlotRepository.getTimeSlotByDay(restaurant,
-				timeSlotPeriod);
+		TimeSlot timeSlot = timeSlotRepository.getTimeSlotByDay(restaurant, timeSlotPeriod);
 		return timeSlot;
 	}
 
@@ -152,27 +143,21 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 	public List<Reservation> getAllReservationsByDate(Restaurant rest, Date date) {
 
 		return manager
-				.createQuery(
-						"Select distinct c from Reservation c where c.restaurant = :restparam and c.bookingDate = :dateparam ",
-						Reservation.class).setParameter("restparam", rest)
-				.setParameter("dateparam", date).getResultList();
+				.createQuery("Select distinct c from Reservation c where c.restaurant = :restparam and c.bookingDate = :dateparam ",
+						Reservation.class).setParameter("restparam", rest).setParameter("dateparam", date).getResultList();
 	}
 
 	/*
 	 * @return List<Reservation> of all reservations of the "restaurant" on
 	 * particular "date"and "bookingTime" extracted previously
 	 */
-	public List<Reservation> getAllReservationsByReservationTime(
-			Restaurant rest, Date date, String reservationTime) {
+	public List<Reservation> getAllReservationsByReservationTime(Restaurant rest, Date date, String reservationTime) {
 
 		return manager
 				.createQuery(
 						"Select distinct c from Reservation c where c.restaurant = :restparam and c.bookingDate = :dateparam "
-								+ "and c.reservationTime = :reservationparam",
-						Reservation.class).setParameter("restparam", rest)
-				.setParameter("dateparam", date)
-				.setParameter("reservationparam", reservationTime)
-				.getResultList();
+								+ "and c.reservationTime = :reservationparam", Reservation.class).setParameter("restparam", rest)
+				.setParameter("dateparam", date).setParameter("reservationparam", reservationTime).getResultList();
 
 	}
 
@@ -186,29 +171,26 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 	 * available tables(hence fully booked)
 	 */
 
-	public List<RestTable> getAvailableTables(List<Reservation> reservations,
-			Restaurant rest, int numberOfPerson) {
+	public List<RestTable> getAvailableTables(List<Reservation> reservations, Restaurant rest, int numberOfPerson) {
 
 		List<RestTable> allAvailableTables = new ArrayList<RestTable>();
 		List<RestTable> allAvailableTables2 = new ArrayList<RestTable>();
 		List<RestTable> allTablesForRestaurant = new ArrayList<RestTable>();
 		allTablesForRestaurant = restTable.findAllByRestaurant(rest);
 
-		if (reservations.size() < allTablesForRestaurant.size()) 
-		{
+		if (reservations.size() < allTablesForRestaurant.size()) {
 			allAvailableTables.addAll(allTablesForRestaurant);
-					for (Reservation booking : reservations) {
-						if (allTablesForRestaurant.contains(booking.getTable())) 
-						{
-							allAvailableTables.remove(booking.getTable());
-						}
-					}
-					allAvailableTables2.addAll(allAvailableTables);
-					for (RestTable table : allAvailableTables2) {
-						if (table.getCapacity() < numberOfPerson) {
-							allAvailableTables.remove(table);
-							}
-					}
+			for (Reservation booking : reservations) {
+				if (allTablesForRestaurant.contains(booking.getTable())) {
+					allAvailableTables.remove(booking.getTable());
+				}
+			}
+			allAvailableTables2.addAll(allAvailableTables);
+			for (RestTable table : allAvailableTables2) {
+				if (table.getCapacity() < numberOfPerson) {
+					allAvailableTables.remove(table);
+				}
+			}
 		}
 
 		return allAvailableTables;
@@ -216,9 +198,8 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
 	@Override
 	public void removeReservation(Reservation boking) {
-		List <Reservation> reservations = getAllBookings();
-		for(Reservation reservation : reservations)
-		{
+		List<Reservation> reservations = getAllBookings();
+		for (Reservation reservation : reservations) {
 			manager.remove(reservation);
 		}
 
@@ -226,33 +207,31 @@ public class ReservationRepositoryImpl implements ReservationRepository {
 
 	@Override
 	public Reservation findByID(long reservationID) {
-		return  manager
-				.createQuery(
-						"Select c from Reservation c where c.reservationID = :IDparam",
-						Reservation.class).setParameter("IDparam", reservationID).getSingleResult();
-		
+		return manager.createQuery("Select c from Reservation c where c.reservationID = :IDparam", Reservation.class)
+				.setParameter("IDparam", reservationID).getSingleResult();
+
 	}
 
 	@Override
 	public List<Menu> findAllMenusPerReservation(Long reservationID) {
-				  
-		Reservation reservationNew = this.findByID(reservationID);
-		
-		
-		  List<MenuReservationMapping> menuReservations = manager.createQuery(
-					"Select c from MenuReservationMapping c where c.reservation = :IDparam",
-					MenuReservationMapping.class).setParameter("IDparam", reservationNew).getResultList();
-		  
-		   List<Menu> menus = new ArrayList<Menu>();
-		   if(menuReservations.isEmpty()){
-			   return menus;}
-		   
-				   else{
-						  for(MenuReservationMapping menuRes: menuReservations)
-						  {
-							  menus.add(menuRes.getMenu());
-						   }
-						  return menus;
-							}
 
-}}
+		Reservation reservationNew = this.findByID(reservationID);
+
+		List<MenuReservationMapping> menuReservations = manager
+				.createQuery("Select c from MenuReservationMapping c where c.reservation = :IDparam", MenuReservationMapping.class)
+				.setParameter("IDparam", reservationNew).getResultList();
+
+		List<Menu> menus = new ArrayList<Menu>();
+		if (menuReservations.isEmpty()) {
+			return menus;
+		}
+
+		else {
+			for (MenuReservationMapping menuRes : menuReservations) {
+				menus.add(menuRes.getMenu());
+			}
+			return menus;
+		}
+
+	}
+}

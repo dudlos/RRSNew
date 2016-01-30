@@ -1,11 +1,13 @@
 package com.dudlo.reservationsystem.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,31 +31,56 @@ public class User {
 	private String lastName;
 
 	@Column
-	private String emailAddress;
+	private String userName;
+	
+	@JsonIgnore
+	@Column
+	private String password;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List <Reservation> reservations;
 	
+	@JsonIgnore
+	@Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 	
 	
-	public User() {	}
+	protected User() {	}
 	
-	public User(String firstName, String lastName, String emailAddress) {
+	public User(String firstName, String lastName, String userName, String password, RoleEnum role) {
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.emailAddress = emailAddress;
+		this.userName= userName;
+		this.password = password;
+		this.reservations = new ArrayList<Reservation>();
+		this.role = role;
 	}
 
 	public void addReservation(Reservation reservation) {
 		reservations.add(reservation);
-		
 	}
 	/**
 	 * @return the reservations
 	 */
 	public List<Reservation> getReservations() {
 		return reservations;
+	}
+
+	
+	/**
+	 * @return the userID
+	 */
+	public long getUserID() {
+		return userID;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
 	}
 
 	/**
@@ -84,18 +111,34 @@ public class User {
 		this.lastName = lastName;
 	}
 
+
+
 	/**
-	 * @return the emailAddress
+	 * @return the userName
 	 */
-	public String getEmailAddress() {
-		return emailAddress;
+	public String getUserName() {
+		return userName;
 	}
 
 	/**
-	 * @param emailAddress the emailAddress to set
+	 * @param userName the userName to set
 	 */
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	/**
+	 * @return the role
+	 */
+	public RoleEnum getRole() {
+		return role;
+	}
+
+	/**
+	 * @param role the role to set
+	 */
+	public void setRole(RoleEnum role) {
+		this.role = role;
 	}
 
 	

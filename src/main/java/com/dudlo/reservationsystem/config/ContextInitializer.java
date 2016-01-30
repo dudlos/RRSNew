@@ -19,7 +19,7 @@ import com.dudlo.reservationsystem.ApplicationConfig;
 /**
  * 
  */
-public class ContextInitializer implements WebApplicationInitializer {// Configuring
+public class ContextInitializer implements WebApplicationInitializer  {// Configuring
 																		// ServletContext
 																		// programic
 	// private static final String CONFIG_LOCATION =
@@ -32,11 +32,7 @@ public class ContextInitializer implements WebApplicationInitializer {// Configu
 	// ServletContext is created by the web container at time of deploying the
 	// project. This object can be used to get configuration information from
 
-	private AnnotationConfigWebApplicationContext getContext() {
-		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-		ctx.setConfigLocation(ApplicationConfig.class.getPackage().getName());
-		return ctx;
-	}
+	
 
 	@Override
 	public void onStartup(ServletContext servletContext)
@@ -83,8 +79,15 @@ public class ContextInitializer implements WebApplicationInitializer {// Configu
 				"DispatcherServlet", new DispatcherServlet(context));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping(MAPPING_URL);
+		
 		log.info("######## Init Application was correctly started #######");
 
+	}
+	
+	private AnnotationConfigWebApplicationContext getContext() {
+		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
+		ctx.register(ApplicationConfig.class);
+		return ctx;
 	}
 
 }

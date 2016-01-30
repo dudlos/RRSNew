@@ -25,17 +25,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.dudlo.reservationsystem.config.CustomException;
 import com.dudlo.reservationsystem.model.Menu;
 import com.dudlo.reservationsystem.model.Reservation;
 import com.dudlo.reservationsystem.model.RestTable;
 import com.dudlo.reservationsystem.model.Restaurant;
+import com.dudlo.reservationsystem.model.User;
 import com.dudlo.reservationsystem.service.MenuService;
 import com.dudlo.reservationsystem.service.ReservationService;
 import com.dudlo.reservationsystem.service.RestTableService;
 import com.dudlo.reservationsystem.service.RestaurantService;
 import com.dudlo.reservationsystem.service.TimeSlotService;
+import com.dudlo.reservationsystem.service.UserService;
 import com.dudlo.reservationsystem.webapp.dto.ExceptionDTO;
 import com.dudlo.reservationsystem.webapp.dto.GetReservationDTO;
 import com.dudlo.reservationsystem.webapp.dto.MenuDTO;
@@ -59,21 +63,21 @@ public class ReservationResource {
 
 	private RestTableService restTableService;
 
-	private TimeSlotService timeSlotService;
-
 	private MenuService menuService;
+
+	private UserService userService;
 
 	@Autowired
 	private Environment env;
 
 	@Autowired
 	public ReservationResource(ReservationService reservationService, RestaurantService restaurantService, MenuService menuService,
-			RestTableService restTableService, TimeSlotService timeSlotService) {
+			RestTableService restTableService, TimeSlotService timeSlotService, UserService userService) {
 		this.reservationService = reservationService;
 		this.restaurantService = restaurantService;
 		this.menuService = menuService;
 		this.restTableService = restTableService;
-		this.timeSlotService = timeSlotService;
+		this.userService = userService;
 	}
 
 	@RequestMapping(value = { "/home" }, method = RequestMethod.GET)
@@ -128,29 +132,62 @@ public class ReservationResource {
 		return new ResponseEntity<ReservationDTO2>(reservationDTO2, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
+
+	 @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
+	 
+	 public Long makeReservation(@RequestParam(value =
+	 "reservationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") String
+	 reservationDate,
+	  
+	  @RequestParam(value = "reservationTime") String reservationTime,
+	  @RequestParam(value = "numberOfPerson") int numberOfPerson,
+	  @RequestParam(value = "restaurantID") long restaurantId,
+	  @RequestParam(value = "tableID") long tableID, @RequestParam(value ="userID") long userID) {
+	   Restaurant restaurant = restaurantService.findById(restaurantId);
+	  RestTable table = restTableService.findById(tableID); User user =
+	  userService.findUserByID(userID);
+	  
+	  Reservation reservation = reservationService.makeReservation(java.sql.Date.valueOf(reservationDate), numberOfPerson, restaurant, table,
+	  reservationTime, user); 
+	  Long reservationID = reservation.getReservationID();
+	  return reservationID; 
+	  }
+	 
+
+	@RequestMapping(value = "/tableBooking" , method = RequestMethod.GET)
+	public ModelAndView tableBooking(@RequestParam(value = "reservationID") Long reservationID) {
+		ModelAndView mav = new ModelAndView("SuccessBooking");
+		mav.addObject("reservationID", reservationID);
+		return mav;
+	
+		
+	}
+
+	/*@RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
 	@ResponseBody
-	public Long makeReservation(@RequestParam(value = "reservationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") String reservationDate,
+	public RedirectView makeReservation(RedirectAttributes redirectAttrs,
+			@RequestParam(value = "reservationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") String reservationDate,
 			@RequestParam(value = "reservationTime") String reservationTime, @RequestParam(value = "numberOfPerson") int numberOfPerson,
-			@RequestParam(value = "restaurantID") long restaurantId, @RequestParam(value = "tableID") long tableID) {
+			@RequestParam(value = "restaurantID") long restaurantId, @RequestParam(value = "tableID") long tableID,
+			@RequestParam(value = "userID") long userID) {
 
 		Restaurant restaurant = restaurantService.findById(restaurantId);
 		RestTable table = restTableService.findById(tableID);
+		User user = userService.findUserByID(userID);
+
 		Reservation reservation = reservationService.makeReservation(java.sql.Date.valueOf(reservationDate), numberOfPerson, restaurant,
-				table, reservationTime);
+				table, reservationTime, user);
 		Long reservationID = reservation.getReservationID();
 
-		return reservationID;
-	}
+		redirectAttrs.addAttribute("reservationID", reservationID);
+		RedirectView redirectView = new RedirectView();
+		redirectView.setUrl("tableBooking");
+		redirectView.setStatusCode(HttpStatus.SEE_OTHER);
+		return redirectView;
 
-	@RequestMapping(value = { "/tableBooking{reservationID}" }, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ModelAndView SuccessBookingPage(@PathVariable(value = "reservationID") String reservationID) {
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("SuccessBooking");
-		return mav;
-	}
+	}*/
 
-	@RequestMapping(value = { "/getReservation" }, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value =  "/getReservation" , method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<GetReservationDTO> getReservation(@RequestParam(value = "reservationID") long reservationID) {
 		Reservation reservation = reservationService.findByID(reservationID);
 		GetReservationDTO getReservationDTO = new GetReservationDTO();
@@ -158,34 +195,6 @@ public class ReservationResource {
 		return new ResponseEntity<GetReservationDTO>(getReservationDTO, HttpStatus.OK);
 	}
 
-	/*
-	 * @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
-	 * //@ResponseBody public ModelAndView makeReservation(@RequestParam(value =
-	 * "reservationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") String
-	 * reservationDate,
-	 * 
-	 * @RequestParam(value = "reservationTime") String reservationTime,
-	 * 
-	 * @RequestParam(value = "numberOfPerson") int numberOfPerson,
-	 * 
-	 * @RequestParam(value = "restaurantID") long restaurantId,
-	 * 
-	 * @RequestParam(value = "tableID") long tableID, RedirectAttributes
-	 * redirectAttrs) {
-	 * 
-	 * Restaurant restaurant = restaurantService.findById(restaurantId);
-	 * RestTable table = restTableService.findById(tableID); Reservation
-	 * reservation = reservationService.makeReservation(
-	 * java.sql.Date.valueOf(reservationDate), numberOfPerson, restaurant,
-	 * table, reservationTime);
-	 * 
-	 * redirectAttrs.addFlashAttribute("newReservation", reservation);
-	 * RedirectView redirectView = new RedirectView();
-	 * redirectView.setUrl("tableBooking");
-	 * redirectView.setContextRelative(true); return new
-	 * ModelAndView(redirectView); //return new
-	 * ModelAndView("redirect:/api/tableBooking.html");
-	 */
 	@RequestMapping(value = "/getAllMenusForRestaurant", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<MenuDTO> getAllMenusForRestaurant(@RequestParam(value = "restaurantID") long restaurantID) {
@@ -211,17 +220,29 @@ public class ReservationResource {
 			@RequestParam(value = "menuID1", required = false) Long menuID1,
 			@RequestParam(value = "menuID2", required = false) Long menuID2,
 			@RequestParam(value = "menuID3", required = false) Long menuID3,
-			@RequestParam(value = "menuID4", required = false) Long menuID4,
-			@RequestParam(value = "menuID5", required = false) Long menuID5	) 
-			{
-			ArrayList<Long> newList = new ArrayList <Long>();
-			if(menuID1 != null){newList.add(menuID1);}; 
-			if(menuID2 != null){newList.add(menuID2);};
-			if(menuID3 != null){newList.add(menuID3);}
-			if(menuID4 != null) {newList.add(menuID4);};
-			if(menuID5 != null) {newList.add(menuID5);};
-				
-			for (Long menu : newList) {
+			@RequestParam(value = "menuID4", required = false) Long menuID4, @RequestParam(value = "menuID5", required = false) Long menuID5) {
+		ArrayList<Long> newList = new ArrayList<Long>();
+		if (menuID1 != null) {
+			newList.add(menuID1);
+		}
+		;
+		if (menuID2 != null) {
+			newList.add(menuID2);
+		}
+		;
+		if (menuID3 != null) {
+			newList.add(menuID3);
+		}
+		if (menuID4 != null) {
+			newList.add(menuID4);
+		}
+		;
+		if (menuID5 != null) {
+			newList.add(menuID5);
+		}
+		;
+
+		for (Long menu : newList) {
 			reservationService.addMenus(reservationID, menu);
 		}
 		Reservation reservation = reservationService.findByID(reservationID);
@@ -231,17 +252,13 @@ public class ReservationResource {
 		return new ResponseEntity<MenuReservationDTO>(getMenuDTO, HttpStatus.OK);
 	}
 
-	
-	
 	@RequestMapping(value = "/findAllMenusPerReservation", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	
 	public List<Menu> getAllMenusReservation(@RequestParam(value = "reservationID") long reservationID) {
 		List<Menu> allMenu = new ArrayList<Menu>();
-		allMenu  = reservationService.findAllMenusPerReservation(reservationID);
+		allMenu = reservationService.findAllMenusPerReservation(reservationID);
 		return allMenu;
 	}
-	
-	
+
 	@ExceptionHandler(TypeMismatchException.class)
 	@ResponseBody
 	public String typeMismatchExceptionHandler(Exception ex, HttpServletRequest request) {

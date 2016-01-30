@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <html>
 <head>
@@ -27,9 +29,13 @@
 </style>
 <title>AddMenu</title>	
 <script type="text/javascript">
-var url = decodeURIComponent(window.location.search.substring(1));
+/* var url = decodeURIComponent(window.location.search.substring(1));
  var newString = url.split(["="], [2]);
- var paramJson = {"reservationID" : newString[1]};
+ var paramJson = {"reservationID" : newString[1]}; */
+ 
+ var reservationID = ${reservationID};
+ var paramJson = {"reservationID" : reservationID};
+
  
 
  </script>
@@ -37,16 +43,15 @@ var url = decodeURIComponent(window.location.search.substring(1));
 var numberOfGuests;
 var index = 0;
 var menus;
-var reservationID = paramJson.reservationID;
 var menuTypes = ["Starter", "Side", "Main", "Dessert", "Salad"];
-var submitPar = {};
+/* var submitPar = {}; */
 
 </script>
 <script type="text/javascript">
 var restaurantResultSet;
 	$(document)
 			.ready(function retrieveReservation() {
-						$.getJSON("${pageContext.request.contextPath}/api/getReservation",	paramJson , function(restaurantResultSet) {
+				 		$.getJSON("${pageContext.request.contextPath}/api/getReservation",paramJson , function(restaurantResultSet) {
 						$(function() { 
 						$("#map").fadeIn();
 						restaurantID	 = restaurantResultSet.newReservation.restaurant.restaurantID;
@@ -153,8 +158,21 @@ $( "#Main" ).selectmenu();
 $("#Dessert").selectmenu();
 $( "#Salad" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
 });
-  </script>
-  <script type="text/javascript">
+ </script>
+ 
+ <sec:csrfMetaTags />
+  <!--  If CSRF protection is enabled, this tag inserts meta tags containing the CSRF protection token form field 
+and header names and CSRF protection token value. These meta tags are useful for employing CSRF protection within
+JavaScript in your applications. You should place csrfMetaTags within an HTML <head></head> block, 
+where you would normally place other meta tags. Once you use this tag, you can access the form field name, 
+header name, and token value easily using JavaScript. 
+http://docs.spring.io/spring-security/site/docs/current/reference/html/taglibs.html#the-csrfmetatags-tag
+ --> 
+<script type="text/javascript">
+var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+			var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+			var csrfToken = $("meta[name='_csrf']").attr("content");
+			
  $(document).ready(function(){$("#addMenu")
 	  .on
 	 ({
@@ -174,7 +192,8 @@ $( "#Salad" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
 		    	 var mainID = $("#Main").val(); if(mainID != null){  requestData.menuID3 = mainID;};
 		    	 var dessertID = $("#Dessert").val(); if(dessertID != null){  requestData.menuID4 = dessertID;};
 		    	 var saladID = $("#Salad").val(); if(saladID != null){  requestData.menuID5 = saladID;};
-		     	 
+		    	 requestData[csrfParameter] = csrfToken;
+		    	 
 		    	 $.post("${pageContext.request.contextPath}/api/addMenus", requestData, function(result){menus = result})
 		    	   	 .done(function() {
 		    	   	 $("#myTable  tbody > tr").remove();

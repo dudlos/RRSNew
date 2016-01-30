@@ -8,6 +8,7 @@ import com.dudlo.reservationsystem.model.Reservation;
 import com.dudlo.reservationsystem.model.RestTable;
 import com.dudlo.reservationsystem.model.Restaurant;
 import com.dudlo.reservationsystem.model.TimeSlot;
+import com.dudlo.reservationsystem.model.User;
 
 public interface ReservationRepository {
 
@@ -20,7 +21,7 @@ public interface ReservationRepository {
 
 	Reservation makeReservation(Date date, int numberOfPerson,
 			Restaurant restaurant, RestTable table,
-			String reservationTime);
+			String reservationTime, User user);
 
 	Reservation addMenus(long reservationID,  long menuID) ;
 

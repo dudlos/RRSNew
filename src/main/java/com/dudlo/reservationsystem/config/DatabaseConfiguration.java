@@ -23,7 +23,6 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @PropertySource("classpath:configuration.properties")
 @EnableTransactionManagement
-//@PropertySource("file://${zap.conf}/conf/application-db.properties")
 public class DatabaseConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);

@@ -13,6 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import com.dudlo.reservationsystem.ApplicationConfig;
 import com.dudlo.reservationsystem.model.Menu.MenuType;
 import com.dudlo.reservationsystem.model.Restaurant;
+import com.dudlo.reservationsystem.model.RoleEnum;
 import com.dudlo.reservationsystem.model.SlotEnum;
 import com.dudlo.reservationsystem.model.TimeSlot;
 import com.dudlo.reservationsystem.repository.RestTableRepository;
@@ -35,6 +36,8 @@ public class SingleMethodTest {
 	TimeSlotService timeSlotService;
 	@Autowired
 	RestTableRepository restTableRepository;
+	@Autowired
+	UserService userService;
 
 	@Test
 	public void PreLoad_Data_Reservation_Test() throws InterruptedException {
@@ -110,6 +113,8 @@ public class SingleMethodTest {
 
 		timeSlotService.addSlots(timeSlotsRest1.get(5), slotsEnumList3);
 		timeSlotService.addSlots(timeSlotsRest1.get(6), slotsEnumList1);
+		
+		userService.createUser("Peter", "Duhacek", "peterduhacek@yahoo.com", "centra6", RoleEnum.ROLE_USER);
 	}
 
 }

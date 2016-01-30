@@ -11,6 +11,7 @@ import com.dudlo.reservationsystem.model.Reservation;
 import com.dudlo.reservationsystem.model.RestTable;
 import com.dudlo.reservationsystem.model.Restaurant;
 import com.dudlo.reservationsystem.model.TimeSlot;
+import com.dudlo.reservationsystem.model.User;
 import com.dudlo.reservationsystem.repository.ReservationRepository;
 
 @Service
@@ -43,8 +44,8 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public Reservation makeReservation(Date date, int numberOfPerson,
-			Restaurant restaurant, RestTable table, String reservationTime) {
-		return this.reservationRepository.makeReservation(date, numberOfPerson, restaurant,  table, reservationTime);
+			Restaurant restaurant, RestTable table, String reservationTime, User user) {
+		return this.reservationRepository.makeReservation(date, numberOfPerson, restaurant,  table, reservationTime, user);
 	}
 
 	@Override

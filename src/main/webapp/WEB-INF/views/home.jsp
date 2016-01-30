@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+ <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
 <html>
 <head>
 <script
@@ -35,6 +38,8 @@
 	var reservationIDRsp;
 	var dialog;
 	var reservationID;
+	var userID;
+	var jsonPost; //for post request par
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -46,7 +51,11 @@
 
 	});
 </script>
-
+<script type="text/javascript">
+$(document).ready(function()
+{userID = 4039}
+)
+</script>
 <script type="text/javascript">
 	$(document)
 			.ready(			
@@ -243,30 +252,51 @@ $(document).ready(function(){$("#make-reservation")
 .on({
     mouseenter: function(){
         $(this).css("background-color", "lightgray");
-    }, 
+          }, 
      mouseleave: function(){
         $(this).css("background-color", "");
     },   
-    click: function(){
+   click: function(){
         makeReservation();
-    },
+    }, 
 });});
 </script>
+
+
+<sec:csrfMetaTags />
 <script type="text/javascript">
+var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+			var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+			var csrfToken = $("meta[name='_csrf']").attr("content");
 
 function makeReservation(){
 var jsonPost;
 jsonPost = {
 "reservationDate" : date, "reservationTime" : checkedRadio, "numberOfPerson" : numberOfGuests, "restaurantID" : restaurantIDPr,
-"tableID" : resultTableID};
-$.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost,  function(result){reservationID = result})
-.done(function() {
-	alert(reservationID);
-    location.href = ("${pageContext.request.contextPath}/api/tableBooking/?reservationID=" + reservationID);
-                     }
-   );
-   };
+"tableID" : resultTableID, "userID": userID};
+ jsonPost[csrfParameter] = csrfToken; 
+
+$.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost  , function(result){reservationID = result;  }  )
+.done($("#current-selection").load(reservationID));
+
+/* goToSuccessBooking(); */
+ 
+ 
+ 
+  
+                     
+             
+   
+   
+   }
  </script>
+ <script type="text/javascript">
+function goToSuccessBooking()
+{
+location.href = ("${pageContext.request.contextPath}/api/tableBooking/?reservationID=" + reservationID);
+}
+</script>
+ 
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 <!--xxxx-->
 <link  href= "/resources/css/styles.css"  rel="stylesheet" type="text/css" >
@@ -330,7 +360,10 @@ $.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost,  func
 	    <tr class="ui-widget-header "><td>Number of Guests: </td><td><input type="text"  id = "guests" readonly="readonly"/></td></tr>
 	</table>
 	</fieldset>
-			<button type="submit" value="send" id="make-reservation" class="ui-widget" style="align: auto">Confirm your Selection</button>
+	<button type="submit" value="send" id="make-reservation" class="ui-widget" style="align: auto">Confirm your Selection</button>
+</div>
+
+<div id = "login"  style = "display: none">
 </div>
 
 <div id="dialogDiv" title="Basic dialog"  style = "display: none">

@@ -20,6 +20,7 @@ import com.dudlo.reservationsystem.model.Reservation;
 import com.dudlo.reservationsystem.model.RestTable;
 import com.dudlo.reservationsystem.model.Restaurant;
 import com.dudlo.reservationsystem.model.TimeSlot;
+import com.dudlo.reservationsystem.model.User;
 import com.dudlo.reservationsystem.repository.RestTableRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -40,6 +41,8 @@ public class MakeReservationTest {
 	TimeSlotService timeSlotService;
 	@Autowired
 	RestTableRepository restTableRepository;
+	@Autowired
+	UserService userService;
 
 	@Test
 	public void Make_Reservation_Test() {
@@ -101,11 +104,20 @@ public class MakeReservationTest {
 		 RestTable table1 = availableTables.get(0);
 		 assertNotNull(table1);
 		 
-		 reservationService.makeReservation(bookingDate, 3, rest1, table1, reservationTime);
+		 
+		 List<User> users = userService.getAllUsers();
+		 assertNotNull(users);
+		 User user = users.get(0);
+		 assertNotNull(user);
+		 Long userID = user.getUserID();
+		 assertNotNull(userID);
+		 
+		 
+		 reservationService.makeReservation(bookingDate, 3, rest1, table1, reservationTime, user);
 		 List <Reservation> bookings =reservationService.getAllBookings();
 		 assertEquals(1, bookings.size());
 				 
-		 reservationService.makeReservation(bookingDate, 3, rest2, table1, reservationTime);
+		 reservationService.makeReservation(bookingDate, 3, rest2, table1, reservationTime, user);
 		 List <Reservation> bookings2 =reservationService.getAllBookings();
 		 assertEquals(2, bookings2.size());
 		 

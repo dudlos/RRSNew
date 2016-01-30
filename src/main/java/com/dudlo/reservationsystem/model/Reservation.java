@@ -61,7 +61,7 @@ public class Reservation implements Serializable {
 	protected Reservation() {
 	}
 
-	public Reservation(Date date, int numberOfPerson, Restaurant restaurant, RestTable table, String reservationTime) {
+	public Reservation(Date date, int numberOfPerson, Restaurant restaurant, RestTable table, String reservationTime, User user) {
 
 		this.bookingDate = date;
 		this.numberOfPerson = numberOfPerson;
@@ -69,6 +69,7 @@ public class Reservation implements Serializable {
 		this.menus = new HashSet<MenuReservationMapping>();
 		this.table = table;
 		this.reservationTime = reservationTime;
+		this.user = user;
 	}
 
 	/**

@@ -6,11 +6,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Date;
@@ -37,13 +35,16 @@ import com.dudlo.reservationsystem.model.Menu.MenuType;
 import com.dudlo.reservationsystem.model.Reservation;
 import com.dudlo.reservationsystem.model.RestTable;
 import com.dudlo.reservationsystem.model.Restaurant;
+import com.dudlo.reservationsystem.model.RoleEnum;
 import com.dudlo.reservationsystem.model.SlotEnum;
 import com.dudlo.reservationsystem.model.TimeSlot;
+import com.dudlo.reservationsystem.model.User;
 import com.dudlo.reservationsystem.service.MenuService;
 import com.dudlo.reservationsystem.service.ReservationService;
 import com.dudlo.reservationsystem.service.RestTableService;
 import com.dudlo.reservationsystem.service.RestaurantService;
 import com.dudlo.reservationsystem.service.TimeSlotService;
+import com.dudlo.reservationsystem.service.UserService;
 import com.dudlo.reservationsystem.webapp.rest.ReservationResource;
 
 /**
@@ -69,6 +70,9 @@ public class ReservationResourceTest {
 
 	@Inject
 	private RestTableService restTableService;
+	@Inject
+	private UserService userService;
+	
 
 	List<RestTable> allTables;
 	
@@ -95,7 +99,7 @@ public class ReservationResourceTest {
 	
 		ReservationResource reservationResource = new ReservationResource(
 				reservationService, restaurantService, menuService,
-				restTableService, timeSlotService);
+				restTableService, timeSlotService, userService);
 		restMvc = MockMvcBuilders.standaloneSetup(reservationResource).build();
 
 		Restaurant rest = restaurantService
@@ -150,10 +154,13 @@ public class ReservationResourceTest {
 		TimeSlot timeSlot = timeSlotService.getTimeSlotByDay(rest, localDate);
 		timeSlotID = timeSlot.getTimeSlotID();
 		
+		userService.createUser("Peter", "Duhacek", "peterduhacek@yahoo.com", "centra6", RoleEnum.ROLE_USER);
+		 List<User> users = userService.getAllUsers();
+		 User user = users.get(0);
 		
 		List<SlotEnum> list = new ArrayList<SlotEnum>(timeSlot.getSlots());
 	    reservationTime =  list.get(0).getSlot();
-		Reservation booking = reservationService.makeReservation(Date.valueOf(LocalDate.now()), 4, rest, table, reservationTime);
+		Reservation booking = reservationService.makeReservation(Date.valueOf(LocalDate.now()), 4, rest, table, reservationTime, user);
 		reservationID = booking.getReservationID();
 		menuID = menu.getMenuID();
 	}
