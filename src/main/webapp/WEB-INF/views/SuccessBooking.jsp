@@ -48,6 +48,7 @@ var menuTypes = ["Starter", "Side", "Main", "Dessert", "Salad"];
 
 </script>
 <script type="text/javascript">
+
 var restaurantResultSet;
 	$(document)
 			.ready(function retrieveReservation() {

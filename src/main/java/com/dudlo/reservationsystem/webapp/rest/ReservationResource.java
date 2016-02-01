@@ -141,9 +141,9 @@ public class ReservationResource {
 	  
 	  @RequestParam(value = "reservationTime") String reservationTime,
 	  @RequestParam(value = "numberOfPerson") int numberOfPerson,
-	  @RequestParam(value = "restaurantID") long restaurantId,
+	  @RequestParam(value = "restaurantID") long restaurantID,
 	  @RequestParam(value = "tableID") long tableID, @RequestParam(value ="userID") long userID) {
-	   Restaurant restaurant = restaurantService.findById(restaurantId);
+	   Restaurant restaurant = restaurantService.findById(restaurantID);
 	  RestTable table = restTableService.findById(tableID); User user =
 	  userService.findUserByID(userID);
 	  
@@ -162,6 +162,24 @@ public class ReservationResource {
 	
 		
 	}
+	
+	@RequestMapping(value = "/preLoginView" , method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ModelAndView preLoginView(
+			@RequestParam(value =  "reservationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") String reservationDate,
+			  @RequestParam(value = "reservationTime") String reservationTime,
+			  @RequestParam(value = "numberOfPerson") int numberOfPerson,
+			  @RequestParam(value = "restaurantID") long restaurantID,
+			  @RequestParam(value = "tableID") long tableID, 
+			  @RequestParam(value ="userID") long userID) 
+	{
+		ModelAndView mav = new ModelAndView("preLogin");
+		mav.addObject("reservationDate", reservationDate).addObject("reservationTime", reservationTime).addObject("numberOfPerson", numberOfPerson)
+		.addObject( "restaurantID",  restaurantID).addObject("tableID", tableID).addObject("userID", userID);
+		return mav ;
+		
+	}
+			
+			
 
 	/*@RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
 	@ResponseBody

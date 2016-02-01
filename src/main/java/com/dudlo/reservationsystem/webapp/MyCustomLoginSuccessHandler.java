@@ -1,4 +1,4 @@
-package com.dudlo.reservationsystem.webapp;
+/*package com.dudlo.reservationsystem.webapp;
 
 import java.io.IOException;
 
@@ -32,3 +32,4 @@ public class MyCustomLoginSuccessHandler extends SavedRequestAwareAuthentication
     }
 
 }
+*/

@@ -20,7 +20,7 @@ out.println("Incorrect login name or password. Please retry using correct login 
 %> --%>
 
 
-<form name='loginForm'  action="<c:url value='j_spring_security_check' />" method='POST'> 
+<form name='f'  action="<c:url value='j_spring_security_check' />" method='POST'> 
 
   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 <table>

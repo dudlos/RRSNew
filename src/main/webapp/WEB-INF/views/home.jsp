@@ -270,32 +270,34 @@ var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
 			var csrfToken = $("meta[name='_csrf']").attr("content");
 
 function makeReservation(){
+/*
 var jsonPost;
 jsonPost = {
 "reservationDate" : date, "reservationTime" : checkedRadio, "numberOfPerson" : numberOfGuests, "restaurantID" : restaurantIDPr,
 "tableID" : resultTableID, "userID": userID};
  jsonPost[csrfParameter] = csrfToken; 
-
 $.post("${pageContext.request.contextPath}/api/makeReservation", jsonPost  , function(result){reservationID = result;  }  )
-.done($("#current-selection").load(reservationID));
+  .done(goToSuccessBooking());  */
 
-/* goToSuccessBooking(); */
- 
+
+
+
  
  
   
                      
              
    
-   
+   location.href = ("${pageContext.request.contextPath}/api/preLoginView/?reservationDate=" + date + "&reservationTime=" + checkedRadio + "&numberOfPerson=" + numberOfGuests
+    + "&restaurantID=" + restaurantIDPr + "&tableID=" + resultTableID +"&userID=" + userID);
    }
  </script>
- <script type="text/javascript">
+ <!-- <script type="text/javascript">
 function goToSuccessBooking()
 {
 location.href = ("${pageContext.request.contextPath}/api/tableBooking/?reservationID=" + reservationID);
 }
-</script>
+</script> -->
  
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 <!--xxxx-->
