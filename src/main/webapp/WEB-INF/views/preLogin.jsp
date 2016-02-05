@@ -34,10 +34,8 @@
  var newString = url.split(["="], [2]);
  var paramJson = {"reservationID" : newString[1]}; */
 
- var reservationDate2 = "${reservationDate}";
- var reservationDate1 = reservationDate2.toString();
- var reservationTime2 = "${reservationTime}";
- var reservationTime1 = reservationTime2.toString();
+ var reservationDate1 = ("${reservationDate}").toString();
+ var reservationTime1 = ("${reservationTime}").toString();
  var numberOfPerson1 = ${numberOfPerson};
  var restaurantID1 = ${restaurantID};
  var tableID1 = ${tableID};
