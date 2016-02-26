@@ -48,7 +48,7 @@ import com.dudlo.reservationsystem.webapp.dto.ReservationDTO;
 import com.dudlo.reservationsystem.webapp.dto.ReservationDTO2;
 
 /**
- * 
+ * Controller for client services(Json and rest) all and views rendering(jsp)
  */
 
 @RestController
